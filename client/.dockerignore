@@ -1,0 +1,4 @@
+node_modules
+.git
+.vscode
+# Add other files/directories to ignore...
