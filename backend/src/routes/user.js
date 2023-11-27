@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {getAllUsers, getUserById, createUser, updateUser, deleteUser} = require('../controllers/user');
+const CustomError = require('../utils/CustomError')
 
 // GET all users
 router.get('/', async (req, res) => {
@@ -24,8 +25,11 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST a new user
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const { username, email, password } = req.body;
+  if(!username || !email || !password)
+    return next(new CustomError('requiring a username and email and password is needed', 400))
+
   try {
     const newUser = await createUser(username, email, password);
     res.status(201).json(newUser);
