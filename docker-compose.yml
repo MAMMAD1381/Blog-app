@@ -1,6 +1,5 @@
 version: '3'
 services:
-  # Client Service
   client:
     build:
       context: ./client
@@ -8,36 +7,52 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+    networks:
+      - Blog-app.com
 
-  # Backend Service
-  backend:
-    build:
-      context: ./backend
-    ports:
-      - "5000:5000"
-    environment:
-      MONGODB_URI: mongodb://mongo:27017/your-database-name
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    depends_on:
-      - mongo
-      - redis
-
-  # MongoDB Service
   mongo:
     image: "mongo:latest"
     ports:
       - "27017:27017"
     volumes:
       - ./data:/data/db
+    networks:
+      - Blog-app.com
 
-  # Redis Service
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/Blog-app
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - Blog-app.com
+
   redis:
     image: "redis:latest"
     ports:
       - "6379:6379"
+    networks:
+      - Blog-app.com
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - client
+      - backend
+    networks:
+      - Blog-app.com
 
 networks:
-  default:
-    external:
-      name: your-network-name
+  Blog-app.com:
+    external: true

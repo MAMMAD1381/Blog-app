@@ -1,5 +1,3 @@
-// /backend/src/routes/userRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const {getAllUsers, getUserById, createUser, updateUser, deleteUser} = require('../controllers/user');

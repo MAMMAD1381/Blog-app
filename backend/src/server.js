@@ -1,5 +1,10 @@
 const express = require('express');
-require('dotenv').config({path: __dirname+'/configs/config.env'})
+
+// loading delopment or production variables
+process.env.NODE_ENV === 'development' ? 
+require('dotenv').config({path: __dirname+'/configs/config.dev.env'}):
+require('dotenv').config({path: __dirname+'/configs/config.prod.env'})
+
 const bodyParser = require('body-parser'); // If needed
 const userRoutes = require('./routes/user');
 const blogRoutes = require('./routes/blog');
