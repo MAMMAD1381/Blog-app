@@ -9,6 +9,8 @@ const bodyParser = require('body-parser'); // If needed
 const userRoutes = require('./routes/user');
 const blogRoutes = require('./routes/blog');
 const connectDB = require('./configs/db')
+const errorHandler = require('./middlwares/errorHandler')
+const CustomError = require('./utils/CustomError')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,17 +22,14 @@ startDB()
 app.use(bodyParser.json()); // If you need to parse JSON request bodies
 
 // Routes
-app.use('/users', userRoutes);
-app.use('/blogs', blogRoutes);
-app.get('/', (req, res, next) => {
-    res.send('welcome home')
+app.use('/api/users', userRoutes);
+app.use('/api/blogs', blogRoutes);
+app.get('/api', (req, res, next) => {
+    res.send('welcome to Api')
 })
 
 // Error handling middleware (optional)
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something went wrong!');
-});
+app.use(errorHandler);
 
 // Start the server
 app.listen(PORT, () => {
