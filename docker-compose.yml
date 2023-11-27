@@ -1,0 +1,43 @@
+version: '3'
+services:
+  # Client Service
+  client:
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  # Backend Service
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/your-database-name
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - mongo
+      - redis
+
+  # MongoDB Service
+  mongo:
+    image: "mongo:latest"
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+
+  # Redis Service
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+
+networks:
+  default:
+    external:
+      name: your-network-name
