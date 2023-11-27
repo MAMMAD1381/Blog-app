@@ -1,28 +1,24 @@
-// /backend/src/index.js
-
 const express = require('express');
-const mongoose = require('mongoose');
+require('dotenv').config({path: __dirname+'/configs/config.env'})
 const bodyParser = require('body-parser'); // If needed
 const userRoutes = require('./routes/user');
 const blogRoutes = require('./routes/blog');
+const connectDB = require('./configs/db')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/your-database-name', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+startDB()
 
 // Middleware
 app.use(bodyParser.json()); // If you need to parse JSON request bodies
 
 // Routes
-// app.use('/users', userRoutes);
-// app.use('/blogs', blogRoutes);
-app.use((req) => {
-
+app.use('/users', userRoutes);
+app.use('/blogs', blogRoutes);
+app.get('/', (req, res, next) => {
+    res.send('welcome home')
 })
 
 // Error handling middleware (optional)
@@ -35,3 +31,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+async function startDB(){
+    await connectDB()
+}

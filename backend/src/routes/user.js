@@ -2,12 +2,12 @@
 
 const express = require('express');
 const router = express.Router();
-const UserController = require('../controllers/UserController');
+const {getAllUsers, getUserById, createUser, updateUser, deleteUser} = require('../controllers/user');
 
 // GET all users
 router.get('/', async (req, res) => {
   try {
-    const users = await UserController.getAllUsers();
+    const users = await getAllUsers();
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const userId = req.params.id;
   try {
-    const user = await UserController.getUserById(userId);
+    const user = await getUserById(userId);
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -29,7 +29,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const { username, email, password } = req.body;
   try {
-    const newUser = await UserController.createUser(username, email, password);
+    const newUser = await createUser(username, email, password);
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,7 +41,7 @@ router.put('/:id', async (req, res) => {
   const userId = req.params.id;
   const { username, email } = req.body;
   try {
-    const updatedUser = await UserController.updateUser(userId, username, email);
+    const updatedUser = await updateUser(userId, username, email);
     res.json(updatedUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -52,7 +52,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const userId = req.params.id;
   try {
-    await UserController.deleteUser(userId);
+    await deleteUser(userId);
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
